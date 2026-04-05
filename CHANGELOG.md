@@ -1,0 +1,2 @@
+- _06/04/2026_ created the basic part of the project
+- _06/04/2026_ added README.md and CHNAGELOG.md file
