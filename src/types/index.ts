@@ -7,3 +7,8 @@ export type User = {
   email: string;
   profileImageUrl?: string;
 };
+
+export type LoginUserPayload = {
+  email: string;
+  password: string;
+};

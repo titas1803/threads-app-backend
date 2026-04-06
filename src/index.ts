@@ -1,9 +1,7 @@
 import express from "express";
-import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
-import { userSchema } from "./schema/users.js";
-import { userMutations, userQueries } from "./resolvers/users.js";
 import "dotenv/config";
+import { createGqlServer } from "./graphQL/server.js";
 
 const app = express();
 console.log("Environment variables loaded successfully:", {
@@ -14,27 +12,12 @@ const port = Number(process.env.PORT) || 8080;
 
 app.use(express.json());
 
-// create graphql server
-const server = new ApolloServer({
-  typeDefs: [userSchema],
-  resolvers: {
-    Query: {
-      ...userQueries.Query,
-    },
-    Mutation: {
-      ...userMutations.Mutation,
-    },
-  },
-});
-
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.json({ message: "Hello World!" });
 });
 
-// start the gql server
-await server.start();
-
-app.use("/graphql", expressMiddleware(server));
+const gqlServer = await createGqlServer();
+app.use("/graphql", expressMiddleware(gqlServer));
 
 app.listen(port, () => {
   console.log(

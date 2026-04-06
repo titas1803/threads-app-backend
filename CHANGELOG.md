@@ -1,2 +1,4 @@
 - _06/04/2026_ created the basic part of the project
 - _06/04/2026_ added README.md and CHNAGELOG.md file
+- _07/04/2026_ code refactored
+- _07/04/2026_ user mutations and queries like create user login user done
