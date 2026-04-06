@@ -2,7 +2,8 @@ import express from "express";
 import { expressMiddleware } from "@as-integrations/express5";
 import "dotenv/config";
 import { createGqlServer } from "./graphQL/server.js";
-
+import { UserService } from "./services/user.js";
+import Jwt from "jsonwebtoken";
 const app = express();
 console.log("Environment variables loaded successfully:", {
   PORT: process.env.PORT,
@@ -17,7 +18,16 @@ app.get("/", (_, res) => {
 });
 
 const gqlServer = await createGqlServer();
-app.use("/graphql", expressMiddleware(gqlServer));
+app.use(
+  "/graphql",
+  expressMiddleware(gqlServer, {
+    context: async ({ req }) => {
+      const token = req.headers.authorization?.split(" ")[1];
+      if (!token) return {};
+      return await UserService.getUserFromToken(token);
+    },
+  }),
+);
 
 app.listen(port, () => {
   console.log(

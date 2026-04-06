@@ -54,7 +54,7 @@ export class UserService {
 
       const token = Jwt.sign(
         { id: user.id, email: user.email },
-        process.env.TOKEN_SECRET ?? "default_secret",
+        process.env.TOKEN_SECRET!,
         { expiresIn: "1h" },
       );
       return { success: true, message: "Login successful", token };
@@ -64,6 +64,20 @@ export class UserService {
         message: error instanceof Error ? error.message : String(error),
         token: null,
       };
+    }
+  }
+
+  public static async getUserFromToken(token: string) {
+    try {
+      const decoded = Jwt.verify(token, process.env.TOKEN_SECRET!) as {
+        id: string;
+        email: string;
+      };
+      const user = await UserService.getUserByEmail(decoded.email);
+      return { user };
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      return {};
     }
   }
 }

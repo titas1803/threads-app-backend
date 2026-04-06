@@ -33,16 +33,6 @@ export const userMutations = (): { Mutation: UserMutationResolvers } => {
 
 export const userQueries = {
   Query: {
-    users: async () => {
-      try {
-        const users = await prisma.user.findMany();
-        console.log("Fetched users successfully:", users);
-        return users;
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        return [];
-      }
-    },
     loginUser: async (
       _: unknown,
       { email, password }: { email: string; password: string },
@@ -54,6 +44,24 @@ export const userQueries = {
         console.error("Error logging in user:", error);
         throw new Error("Invalid email or password");
       }
+    },
+    getCurrentUser: async (
+      _: unknown,
+      __: unknown,
+      context: { user?: User },
+    ) => {
+      if (!context.user) {
+        return {
+          success: false,
+          user: null,
+          error: "Unauthorized",
+        };
+      }
+      return {
+        success: true,
+        user: context.user,
+        error: null,
+      };
     },
   },
 };

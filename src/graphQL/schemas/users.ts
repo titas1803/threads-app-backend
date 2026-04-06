@@ -17,9 +17,14 @@ export const userSchema = `#graphql
     message: String!
     token: String
   }
+  type CurrentUserResponse {
+    success: Boolean!
+    user: User
+    error: String
+  }
   type Query {
-    users: [User!]
     loginUser(email: String!, password: String!): LoginResponse
+    getCurrentUser: CurrentUserResponse
   }
   type Mutation {
     createUser(firstName: String!, lastName: String!, email: String!, password: String!, profileImageUrl: String): CreateUserResponse!
